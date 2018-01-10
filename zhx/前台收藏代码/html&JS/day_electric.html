@@ -1,0 +1,160 @@
+<style type="text/css">
+    .row{
+        margin-left: 0px;
+    }
+    .queryBodeDiv{
+        border:1px solid #aaa;
+        padding:5px;
+        background-color:#fdfbe7;
+        width:100%;
+    }
+    .handredWidth{
+        width:100%;
+    }
+    .handredHeight{
+        height:100%;
+    }
+    #dayElectricTable th{
+        height: 30px;
+        background: url(../resources/libs/grid-manager/colNormal.gif) #f0f0f0 repeat-x;
+        text-align: center;
+        border: 1px solid #dad9c7;
+    }
+    td{
+        height: 26px;
+        text-align: center;
+        border: 1px solid #dad9c7;
+        padding: 4px;
+    }
+    .gm-emptyTemplate {
+        width: 100%;
+        height: 100px;
+        line-height: 100px;
+        text-align: center;
+        font-size: 24px;
+        color: #ddd;
+        background-color: #f8f8f8;
+    }
+    tbody tr[row-hover="true"] td {
+        background-color: white;
+        color: #000;
+    }
+</style>
+<!--当日电催跟进量-->
+<div role="tabpanel" class="tab-pane active" id="day" style="min-height: 500px;">
+    <div class="btn-group queryBodeDiv">
+        <div class="row handredWidth">
+            <div style="width:80px;float: left;height: 50px;">
+                <label for="casSeNosName"><a href="####" class="selectCasSeNo"   data-toggle="modal"
+                                         data-target="#casSeNoModal">催收员&nbsp;&nbsp;</a></label>
+            </div>
+            <div style="overflow: hidden;height: 50px;">
+                <div class="handredWidth handredHeight" style="background-color: white;">
+                    <textarea  class="handredWidth handredHeight selectCasSeNo"  id="casSeNosName"   data-toggle="modal"  data-target="#casSeNoModal"
+                               style="cursor:pointer;resize: none;" readonly>
+                    </textarea>
+                    <input type="hidden" id="casSeNos"/>
+                </div>
+            </div>
+        </div>
+        <div class="row handredWidth" style="margin-top: 5px;">
+            <div class="col-sm-3">
+                <strong>&nbsp;催收区域&nbsp;&nbsp;</strong>
+                <select class="form-control input-sm" id="cbatAreaName" multiple></select>
+            </div>
+            <div class="col-sm-3">
+                <strong>&nbsp;委托方&nbsp;&nbsp;</strong>
+                <select class="form-control input-sm" id="cas_typ_bid" multiple></select>
+            </div>
+            <div class="col-sm-4">
+                <strong>&nbsp;日期&nbsp;&nbsp;</strong>
+                <input type="text" class="form-control input-sm"  id="date_star" placeholder="起始日期"  readonly/>
+                &nbsp;到&nbsp;<input type="text" class="form-control input-sm"  id="date_end"  placeholder="结束日期"  readonly/>
+            </div>
+            <div class="col-sm-2">
+                <input type="button" id="queryButton" class="form-control input-sm btn-default" value="开始统计"/>
+            </div>
+        </div>
+    </div>
+    <!--表格-->
+    <div style="margin-top:5px;" id="tableDiv" hidden>
+        <input type="button" class="form-control input-sm btn-default" value="导出统计数据"style="margin-bottom: 5px;margin-top: 10px;"/>
+        <!--<table id="day_electric_table" grid-manager="day_electric_table"></table>-->
+        <table width="100%" id="dayElectricTable">
+            <thead>
+                <tr>
+                    <th rowspan="2">催收员</th>
+                    <th colspan="3">8:00前</th>
+                    <th colspan="3">8:00-12:00</th>
+                    <th colspan="3">12:00-18:00</th>
+                    <th colspan="3">18:00以后</th>
+                    <th colspan="3">合计</th>
+                </tr>
+                <tr>
+                    <th>有效通电</th>
+                    <th>总通电量</th>
+                    <th>个案量</th>
+                    <th>有效通电</th>
+                    <th>总通电量</th>
+                    <th>个案量</th>
+                    <th>有效通电</th>
+                    <th>总通电量</th>
+                    <th>个案量</th>
+                    <th>有效通电</th>
+                    <th>总通电量</th>
+                    <th>个案量</th>
+                    <th>有效通电</th>
+                    <th>总通电量</th>
+                    <th>个案量</th>
+                </tr>
+            </thead>
+            <tbody id="dayElectricTableTbody"></tbody>
+            <tbody id="dayElectricTableTbodyNone" hidden>
+                <tr emptytemplate="" row-hover="true">
+                    <td colspan="16" col-hover="true" style="text-align: center;">
+                        <div class="gm-emptyTemplate">数据为空</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--统计图-->
+    <div class="panel panel-primary" style="width: 100%;height: 380px;margin-top: 50px;">
+        <!--<div class="panel-heading" style="background:#3c8dbc;">
+            <h3 class="panel-title">电催员电催日度统计<span id="selectDate"></span></h3>
+        </div>
+        <div class="panel-body" style="padding: 1px">
+                        <span style="float: right">
+                            <button type="button" class="btn btn-success btn-xs" name="imageBtn" id="imageBtn1">柱图</button>
+                            <button type="button" class="btn btn-success btn-xs" name="imageBtn" id="imageBtn2">折线图</button>
+                            <button type="button" class="btn btn-success btn-xs" name="imageBtn" id="imageBtn3">饼图</button>
+                        </span>
+        </div>
+        <div id="barImage" style="width: 100%;height:300px;border: 0px solid gray;margin-left: 5px;"></div>&lt;!&ndash; 柱图 &ndash;&gt;
+        <div id="lineImage" style="width: 950px;height:300px;border: 0px solid gray;margin-left: 5px;display: none;"></div>&lt;!&ndash; 折线图 &ndash;&gt;
+        <div id="radiusImage" style="width: 950px;height:300px;border:0px solid gray;margin-left: 5px;display: none"></div> 饼图-->
+    </div>
+
+    <!--催收员modal-->
+    <div id="casSeNoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="height:395px;">
+                <div class="modal-header" style="height: 13%">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">催收员</h4>
+                </div>
+                <div class="modal-body container" style="height: 72%;">
+                    <div style="overflow-y: scroll;height: 100%; width: 560px;">
+                        <ul id="departEmpTree" class="ztree"></ul>
+                    </div>
+                </div>
+                <div class="modal-footer" style="height: 13%">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" id="employBtn" class="btn btn-primary">保存</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+</div>
+
+<script type="text/javascript" src="../app/statisticsReport/electricStatistics/day_electric.js"></script>
